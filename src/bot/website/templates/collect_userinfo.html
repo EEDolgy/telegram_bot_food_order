@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block title %}User info{% endblock %}
+
+
+{% block header %}Давайте знакомиться{% endblock %}
+
+
+{% block content %}
+<form method="Post">
+    <p><b>Как Вас зовут?</b>
+        <br/>
+        <input type="text" name="name" id="name" required size="40">
+    </p>
+    <p><b>Телефон для связи:</b>
+        <br/>
+        <input type="tel" name="telephone" id="telephone" size="40">
+    </p>
+    <p><b>Адрес доставки:</b>
+        <br/>
+        <textarea
+                type="text"
+                name="address"
+                id="address"
+                cols="40"
+                rows="1"
+                required>
+        </textarea>
+    </p>
+    <p><b>Комментарий к заказу:</b>
+        <br/>
+        <textarea
+                type="text"
+                name="comment"
+                id="comment"
+                cols="40"
+                rows="1">
+        </textarea>
+    <div>
+        <button type="submit" class="btn btn-lg btn-dark">submit</button>
+    </div>
+</form>
+{% endblock %}
+
+
+{% block footer_make_order %}
+{% endblock %}

@@ -1,0 +1,9 @@
+.idea
+Include
+Lib
+Scripts
+pyvenv.cfg
+**/client_secrets.json
+**/user_data
+**/__pycache__
+**/database.db
