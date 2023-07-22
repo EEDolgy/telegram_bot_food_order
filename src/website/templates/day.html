@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{day.date}}{% endblock %}
+
+
+{% block header %}
+<p>
+    Меню на {{ day.week_day }}, {{ day.date }}
+</p>
+<h6 class="text-secondary">
+    минимальная сумма заказа на день 30₾
+</h6>
+<br>
+{% endblock %}
+
+
+{% block content %}
+{% for m in menu %}
+    <div class="col-12 col-lg-6 col-xl-4">
+        <div class="container">
+            <div class="center-block">
+            <div class="card bg-light mb-3"
+                 style="height: 95%;
+                 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">
+                <div class="card-header text-center">
+                        <img src="../static/im_1.jpg"
+                             class="img-fluid"
+                            style="width: 50%;">
+                </div>
+                <div class="card-body text-dark">
+                    <h5 class="card-title">{{m.name}}</h5>
+                    <p class="card-text">{{m.description}}
+                    </p>{{m.amount}}</p>
+                    <p>{{m.parameters}}</p>
+                </div>
+                <div class="card-header text-center">
+                    <div class="product_buttons">
+                            <button class="btn btn-secondary btn-sm"
+                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 0);">
+                                0
+                            </button>
+                            <button class="btn btn-secondary btn-sm"
+                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 1);">
+                                1
+                            </button>
+                            <button class="btn btn-secondary btn-sm"
+                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 1.5);">
+                                1,5
+                            </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}
+
+
+{% block footer %}
+    {% if prev_day %}
+    <a href="/day/{{prev_day}}"
+       class="btn btn-secondary"
+       style="height = 90%"> Назад
+    </a>
+    {% endif %}
+    {% if next_day %}
+    <a href="/day/{{next_day}}"
+       class="btn btn-secondary"
+       style="max-height = 90%; margin-top = 5%"> Вперед
+    </a>
+{% endif %}
+{% endblock %}

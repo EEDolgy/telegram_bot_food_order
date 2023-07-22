@@ -5,9 +5,11 @@ from telegram import KeyboardButton, ReplyKeyboardMarkup, \
 from telegram.ext import Application, CommandHandler, ContextTypes, \
     MessageHandler, filters, CallbackQueryHandler
 
-from src.bot.database import get_meta_info
+from src.bot.database import get_meta_info, get_users_last_order
 # from src.bot.googledrive_exchange.Google_Drive \
 #     import get_data_from_google_drive, add_data_to_db
+# from src.bot.googledrive_exchange import download_menu
+
 
 def run_bot():
     with open('bot/user_data/token.txt', 'r') as f:
@@ -20,7 +22,7 @@ def run_bot():
     application.add_handler(CommandHandler("last_order", last_order))
     application.add_handler(MessageHandler(
         filters.StatusUpdate.WEB_APP_DATA, web_app_data))
-    # application.add_handler(CallbackQueryHandler(mama_commands))
+    application.add_handler(CallbackQueryHandler(mama_commands))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
@@ -46,7 +48,8 @@ async def start(update: Update, context) -> None:
         reply_markup=ReplyKeyboardMarkup.from_button(
             KeyboardButton(
                 text="Посмотреть меню и сделать заказ",
-                web_app=WebAppInfo("https://286c-176-221-140-194.eu.ngrok.io/"),
+                web_app=WebAppInfo(
+                    "https://e3f0-176-221-140-194.ngrok-free.app/"),
             ),
             resize_keyboard=True
         ),
@@ -62,7 +65,8 @@ async def mama_stuff(update: Update, context) -> None:
         await update.message.reply_text(
             f"Здравствуйте, Нина!"
         )
-        reply_keyboard = [[InlineKeyboardButton(val, callback_data=key)] for key, val in MAMA_ACTIONS.items()]
+        reply_keyboard = [[InlineKeyboardButton(val, callback_data=key)]
+                          for key, val in MAMA_ACTIONS.items()]
         await update.message.reply_text(
             rf"Что Вы хотите сделать?",
             reply_markup=InlineKeyboardMarkup(reply_keyboard)
@@ -81,25 +85,25 @@ async def mama_stuff(update: Update, context) -> None:
         )
 
 
-# async def mama_commands(update: Update, context) -> None:
-#     action = update.callback_query.data
-#
-#     if action == 'Update menu':
-#         await update.effective_message.reply_text(
-#             "Подождите, меню обновляется..."
-#         )
-#         get_data_from_google_drive()
-#         await update.effective_message.reply_text(
-#             'Новое меню загружено в базу данных!'
-#         )
-#     elif action == 'Update Google Drive':
-#         await update.effective_message.reply_text(
-#             "Подождите, данные загружаются на диск..."
-#         )
-#         add_data_to_db()
-#         await update.effective_message.reply_text(
-#             'Данные о пользователях и заказах обновлены!'
-#         )
+async def mama_commands(update: Update, context) -> None:
+    action = update.callback_query.data
+
+    if action == 'Update menu':
+        await update.effective_message.reply_text(
+            "Подождите, меню обновляется..."
+        )
+        download_menu()
+        await update.effective_message.reply_text(
+            'Новое меню загружено в базу данных!'
+        )
+    elif action == 'Update Google Drive':
+        await update.effective_message.reply_text(
+            "Подождите, данные загружаются на диск..."
+        )
+    #     add_data_to_db()
+    #     await update.effective_message.reply_text(
+    #         'Данные о пользователях и заказах обновлены!'
+    #     )
 
 
 async def last_order(update: Update, context) -> None:

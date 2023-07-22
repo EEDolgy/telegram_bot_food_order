@@ -52,8 +52,11 @@ def get_day_menu(date):
 @views.route("/")
 def home():
     dates = get_dates(result_str=True)
+    with open('static/greetings_text.txt', 'r', encoding='utf-8') as f:
+        greetings_text = f.read()
 
-    return render_template('front_page.html', dates=dates)
+    return render_template('front_page.html', dates=dates,
+                           greetings_text=greetings_text)
 
 
 @views.route("/day/<date>")
@@ -79,8 +82,10 @@ def day(date):
         next_day = days[i+1]
         prev_day = days[i-1]
 
+    dates = get_dates(result_str=True)
+
     return render_template('day.html', menu=menu, day=day, days=days,
-                           next_day=next_day, prev_day=prev_day)
+                           next_day=next_day, prev_day=prev_day, dates=dates)
 
 
 @views.route("/user_info", methods=['GET', 'POST'])
@@ -120,13 +125,13 @@ def user_info():
 
         return redirect(url_for('views.home'))
 
-    return render_template('collect_userinfo.html')
+    dates = get_dates(result_str=True)
+
+    return render_template('collect_userinfo.html', dates=dates)
 
 
 @views.route("/order_details")
 def order_details():
-
-
 
     return render_template('order_details.html')
 

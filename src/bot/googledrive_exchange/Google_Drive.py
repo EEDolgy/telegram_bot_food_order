@@ -5,7 +5,7 @@ import os
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import select
+from sqlalchemy import select, desc
 import pandas as pd
 
 from src.bot.database import DB, Users, Images, Dishes, \
@@ -42,13 +42,13 @@ def get_folder_id(folder_name, parent_folder="root"):
             return file['id']
 
 
-# MAMA_FOLDER_ID = get_folder_id(FOLDER)
+MAMA_FOLDER_ID = get_folder_id(FOLDER)
 
 
 def get_data_from_google_drive():
 
     '''Getting data from Google Drive and adding it to database'''
-    
+
     menu_folder = 'Меню'
     menu_folder_id = get_folder_id(menu_folder, FOLDER)
 
@@ -141,9 +141,7 @@ def add_data_to_db(all_dishes, week_menu):
                          price=x['price'],
                          amount=x['amount'],
                          category=x['category'],
-                         PFC=x['PFC']),
-                         axis=1
-                        )
+                         PFC=x['PFC']), axis=1)
     menu = list(menu)
 
     for item in menu:
@@ -168,23 +166,21 @@ def add_data_to_db(all_dishes, week_menu):
     columns = list(week_menu.columns[0:3]) + ['Dish', 'category']
     dates_menu = pd.DataFrame(columns=columns)
     for i, val in week_menu_dict.items():
-        week_menu_dict[i].rename(columns={f'Dish_{i}': 'Dish'}, inplace=True)
-        week_menu_dict[i]['category'] = [i] * week_menu.shape[0]
-        dates_menu = pd.concat([dates_menu, week_menu_dict[i]])
+        val_1 = val.copy()
+        val_1.rename(columns={f'Dish_{i}': 'Dish'}, inplace=True)
+        val_1.insert(4, 'category', [i] * week_menu.shape[0], False)
+        dates_menu = pd.concat([dates_menu, val_1])
     dates_menu['date'] = pd.to_datetime(dates_menu['date'])
     dates_menu['category'] = dates_menu['category'].astype(str)
-
 
     id_list = [name_id[i] for i in dates_menu['Dish']]
     dates_menu.rename(columns={f'Dish': 'id_dish'}, inplace=True)
     dates_menu['id_dish'] = id_list
-    DatesMenu_list = [DatesMenu(date=i.date, id_dish=i.id_dish,
-                            category=i.category)
-            for i in 
-            dates_menu.itertuples()
-           ]
+    dates_menu_list = [DatesMenu(date=i.date, id_dish=i.id_dish,
+                                 category=i.category) for i in
+                       dates_menu.itertuples()]
 
-    for item in DatesMenu_list:
+    for item in dates_menu_list:
         not_unique = session.scalars(
                         select(DatesMenu).where(DatesMenu.date == item.date)
                             .where(
@@ -200,7 +196,71 @@ def add_data_to_db(all_dishes, week_menu):
     session.close()
 
 
-if __name__ == '__main__':
+def download_menu():
     all_dishes, week_menu = get_data_from_google_drive()
     add_data_to_db(all_dishes, week_menu)
-    print('')
+
+
+def upload(user_info, file_name):
+        data_list = []
+        for item in user_info:
+            user_info_dict = item.__dict__
+            user_info_dict.pop('_sa_instance_state', None)
+            data_list.append(user_info_dict)
+
+        lister = drive.ListFile({'q': f"'{MAMA_FOLDER_ID}'"
+                                      f"in parents and "
+                                      f"trashed=false"}).GetList()
+        for file in lister:
+            if file['title'] == file_name:
+                file.Trash()
+                break
+
+        result = pd.DataFrame(data_list)
+
+        my_file = drive.CreateFile({'title': file_name, 'mimeType':
+            'text/csv', 'parents': [{'id': MAMA_FOLDER_ID}]})
+        my_file.SetContentString(result.to_csv())
+        my_file.Upload({'convert': True})
+
+
+def upload_clients():
+    Session = sessionmaker(bind=ENGINE)
+    session = Session()
+
+    user_info = session.scalars(select(Users)).all()
+
+    session.close()
+
+    if user_info:
+        upload(user_info, 'База клиентов')
+    else:
+        return None
+
+
+def upload_orders():
+    Session = sessionmaker(bind=ENGINE)
+    session = Session()
+
+    last_sprint = session.query(Sprints).order_by(desc(
+        Sprints.first_date)).first().first_date
+    user_info = (
+        session.query(Users.username_tg, Orders.Comment, Orders.order_date,)
+        .join(Employee.department)
+        .join(Address, Employee.id == Address.employee_id)
+        .filter(Department.name == 'HR')
+        .scalars()
+        .all()
+    )
+
+
+    session.close()
+
+    if user_info:
+        upload(user_info, 'Актуальные заказы')
+    else:
+        return None
+
+
+if __name__ == '__main__':
+    upload()

@@ -7,3 +7,4 @@ pyvenv.cfg
 **/user_data
 **/__pycache__
 **/database.db
+**/greetings_text.txt

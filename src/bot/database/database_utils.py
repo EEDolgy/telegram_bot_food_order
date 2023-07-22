@@ -45,7 +45,7 @@ def get_users_last_order(username_tg):
         select(Users.id).where(Users.username_tg == username_tg)).first()
 
     if user_id is not None:
-
+        pass
     else:
         orders = False
 

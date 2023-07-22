@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}MAMA DOMA{% endblock %}
+
+{% block header %}Добро пожаловать!{% endblock %}
+
+{% block content %}
+<div class="container-fluid text-center">
+    <img src="../static/im_1.jpg"
+         class="img-fluid"
+         style="width: 15%; margin-bottom=3px;">
+</div>
+<div class="container-fluid text-center" style="width: 80%;">
+    <p>{{greetings_text}}</p>
+</div>
+{% endblock %}
+
+{% block footer_to_main_page %}
+{% endblock %}
