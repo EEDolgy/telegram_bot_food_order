@@ -55,12 +55,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary"
-                           href="/"> Корзина
+                           href="/order_details"> Корзина
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary"
-                           href="/user_info"> Оформить заказ
+                           href="/user_info"> Ваш контакт
                         </a>
                     </li>
                 </ul>
@@ -81,13 +81,17 @@
     </div>
     <br>
     <br>
+    {% block footer %}
     <div class="footer">
         <div class="container-fluid bg-body-tertiary"
-             style="max-height = 5%">
+             style="max-height = 5%;
+             padding-top: 2%;
+             padding-bottom: 2%">
             <div class="center-block text-center">
-                {% block footer %}{% endblock %}
+                {% block footer_button %}{% endblock %}
             </div>
         </div>
     </div>
+    {% endblock %}
 </body>
 </html>

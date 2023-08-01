@@ -5,6 +5,7 @@ Scripts
 pyvenv.cfg
 **/client_secrets.json
 **/user_data
+**/static
 **/__pycache__
 **/database.db
 **/greetings_text.txt

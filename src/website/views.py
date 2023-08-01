@@ -1,7 +1,10 @@
+from os import getcwd
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from datetime import datetime
+import re
 
 from src.bot.database import DB, Users, Images, Dishes, \
     DatesMenu, Sprints, Orders, OrderDishes, \
@@ -49,18 +52,33 @@ def get_day_menu(date):
     return {'menu': day_menu, 'day': day}
 
 
+def get_greetings_text_path():
+    cwd = getcwd()
+    if re.search('website', cwd):
+        return "static/greetings_text.txt"
+    else:
+        return "website/static/greetings_text.txt"
+
+
 @views.route("/")
 def home():
+
+    print(getcwd())
     dates = get_dates(result_str=True)
-    with open('static/greetings_text.txt', 'r', encoding='utf-8') as f:
+
+    greetings_text_path = get_greetings_text_path()
+    with open(greetings_text_path, 'r', encoding='utf-8') as f:
         greetings_text = f.read()
 
+    img_path = "../static/im_1.jpg"
+
     return render_template('front_page.html', dates=dates,
-                           greetings_text=greetings_text)
+                           greetings_text=greetings_text, img_path=img_path)
 
 
 @views.route("/day/<date>")
 def day(date):
+    img_path = "../static/im_1.jpg"
     # year = datetime.now().year TODO
     year = 2022
     date = date + '.' + str(year)
@@ -83,9 +101,9 @@ def day(date):
         prev_day = days[i-1]
 
     dates = get_dates(result_str=True)
-
     return render_template('day.html', menu=menu, day=day, days=days,
-                           next_day=next_day, prev_day=prev_day, dates=dates)
+                           next_day=next_day, prev_day=prev_day, dates=dates,
+                           img_path=img_path)
 
 
 @views.route("/user_info", methods=['GET', 'POST'])
@@ -132,49 +150,12 @@ def user_info():
 
 @views.route("/order_details")
 def order_details():
+    dates = get_dates(result_str=True)
 
-    return render_template('order_details.html')
+    return render_template('order_details.html', dates=dates)
 
 
-# @app.route("/menu", methods=['GET', 'POST'])
-# def first_date():
-#     menu = get_actual_menu()
-#     dates = list(menu.keys())
-#     ln = len(dates)
-#     if 'pg' in request.args:
-#         page = request.args.get('pg')
-#         dates_str = [menu[dt]['date'] for dt in dates]
-#         if page == 'fst':
-#             eggs = list(zip(dates_str, range(ln)))
-#             dates_pages = {k: v for k, v in eggs}
-#             return render_template('Front_page.html', dates_pages=dates_pages)
-#         elif page == 'lst':
-#             return render_template('Collect_userinfo.html')
-#         elif page == 'view':
-#             return render_template('Order_view.html')
-#     elif 'i' in request.args:
-#         i = int(request.args.get('i'))
-#         menu_day = menu[dates[i]]
-#         menu = [menu_day[str(i)] for i in range(1, 6)]
-#         if i in range(1, ln-1):
-#             return render_template('Order_day.html',
-#                                    menu_day=menu_day,
-#                                    next_page=f'{i+1}',
-#                                    previous_page=f'{i-1}',
-#                                    menu=menu)
-#         elif i == 0:
-#             return render_template('Order_day.html',
-#                                    menu_day=menu_day,
-#                                    next_page=f'{i+1}',
-#                                    first_date=True,
-#                                    menu=menu)
-#         elif i == ln-1:
-#             return render_template('Order_day.html',
-#                                    menu_day=menu_day,
-#                                    previous_page=f'{i-1}',
-#                                    last_date=True,
-#                                    menu=menu)
-#
-#
-# if __name__ == "__main__":
-#     app.run()
+if __name__ == "__main__":
+    import os
+    content = os.listdir('static')
+    print(content)

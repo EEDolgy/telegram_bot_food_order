@@ -24,7 +24,7 @@
                  style="height: 95%;
                  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">
                 <div class="card-header text-center">
-                        <img src="../static/im_1.jpg"
+                        <img src="{{img_path}}"
                              class="img-fluid"
                             style="width: 50%;">
                 </div>
@@ -34,7 +34,7 @@
                     </p>{{m.amount}}</p>
                     <p>{{m.parameters}}</p>
                 </div>
-                <div class="card-header text-center">
+                <div class="card-footer text-center">
                     <div class="product_buttons">
                             <button class="btn btn-secondary btn-sm"
                                     onclick="addDishToOrder({{day.date}}, {{m.category}}, 0);">
@@ -58,7 +58,7 @@
 {% endblock %}
 
 
-{% block footer %}
+{% block footer_button %}
     {% if prev_day %}
     <a href="/day/{{prev_day}}"
        class="btn btn-secondary"
