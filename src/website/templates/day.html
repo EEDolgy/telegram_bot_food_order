@@ -35,19 +35,22 @@
                     <p>{{m.parameters}}</p>
                 </div>
                 <div class="card-footer text-center">
-                    <div class="product_buttons">
-                            <button class="btn btn-secondary btn-sm"
-                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 0);">
-                                0
-                            </button>
-                            <button class="btn btn-secondary btn-sm"
-                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 1);">
-                                1
-                            </button>
-                            <button class="btn btn-secondary btn-sm"
-                                    onclick="addDishToOrder({{day.date}}, {{m.category}}, 1.5);">
-                                1,5
-                            </button>
+                    <div class="row">
+                        <div class="col-3 "></div>
+                        <div class="col-5 ">
+                            <div class="row">
+                                {% for amount in [0, 1, 1.5] %}
+                                    <div class="col-4 ">
+                                        <button class="btn btn-secondary btn-sm"
+                                                id="{{day.date}}-{{m.category}}-{{amount}}"
+                                                onclick="addDishToOrder('{{day.date}}', '{{m.category}}', {{amount}}, '{{m.name}}', '{{day.week_day}}')">
+                                            {{amount}}
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-3 "></div>
                     </div>
                 </div>
             </div>

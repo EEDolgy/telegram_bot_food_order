@@ -49,7 +49,7 @@ async def start(update: Update, context) -> None:
             KeyboardButton(
                 text="Посмотреть меню и сделать заказ",
                 web_app=WebAppInfo(
-                    "https://e3f0-176-221-140-194.ngrok-free.app/"),
+                    "https://32b4-176-221-140-194.ngrok-free.app/"),
             ),
             resize_keyboard=True
         ),

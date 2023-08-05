@@ -37,6 +37,16 @@
                         <a class="nav-link text-secondary" href="/">
                                     Главная</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary"
+                           href="/order_details"> Корзина
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary"
+                           href="/user_info"> Ваш контакт
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link btn dropdown-toggle text-secondary"
                            href="/user_info"
@@ -52,16 +62,6 @@
                             </li>
                             {% endfor %}
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary"
-                           href="/order_details"> Корзина
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary"
-                           href="/user_info"> Ваш контакт
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -94,4 +94,13 @@
     </div>
     {% endblock %}
 </body>
+<!--<script type="text/javascript">-->
+<!--    let tg = window.Telegram.WebApp;-->
+<!--    tg.expand();-->
+<!--    tg.MainButton.show();-->
+<!--</script>-->
+<script
+        type="text/javascript"
+        src="{{ url_for('static', filename='index.js') }}">
+</script>
 </html>

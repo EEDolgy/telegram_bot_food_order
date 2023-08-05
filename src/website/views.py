@@ -1,6 +1,7 @@
 from os import getcwd
 
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, \
+    url_for, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from datetime import datetime
@@ -104,6 +105,11 @@ def day(date):
     return render_template('day.html', menu=menu, day=day, days=days,
                            next_day=next_day, prev_day=prev_day, dates=dates,
                            img_path=img_path)
+
+
+# @views.route("/add_dish/<date>/<category>/<amount>", methods=['Post'])
+# def add_dish(date, category, amount):
+#     return jsonify({"date": date, "category": category, "amount": amount})
 
 
 @views.route("/user_info", methods=['GET', 'POST'])
